@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Inventory | Ganzon's POS</title>
+    <link rel="stylesheet" href="css/style.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+</head>
+<body>
+    <!-- ==================== SIDEBAR ==================== -->
+    <nav class="sidebar">
+        <div class="logo">
+            <div class="logo-icon"><i class="fas fa-store"></i></div>
+            <div class="logo-text">
+                <h2>Ganzon's POS</h2>
+                <p>Smart Business</p>
+            </div>
+        </div>
+        <ul>
+            <li><a href="dashboard.html"><i class="fas fa-th-large"></i><span>Dashboard</span></a></li>
+            <li><a href="cashier.html"><i class="fas fa-cash-register"></i><span>Cashier</span></a></li>
+            <li class="active"><a href="inventory.html"><i class="fas fa-boxes"></i><span>Inventory</span></a></li>
+            <li><a href="sales.html"><i class="fas fa-chart-bar"></i><span>Sales</span></a></li>
+            <li><a href="reports.html"><i class="fas fa-file-alt"></i><span>Reports</span></a></li>
+            <li><a href="customers.html"><i class="fas fa-users"></i><span>Customers</span></a></li>
+            <li><a href="settings.html"><i class="fas fa-cog"></i><span>Settings</span></a></li>
+        </ul>
+    </nav>
+
+    <!-- ==================== MAIN ==================== -->
+    <div class="main">
+        <header>
+            <div class="header-left">
+                <h1><i class="fas fa-boxes" style="color:#2563eb;"></i> Inventory</h1>
+                <p>Manage your store inventory</p>
+            </div>
+            <div class="header-right">
+                <div class="user-info">
+                    <div class="avatar" id="userAvatar">A</div>
+                    <span class="name" id="userName">Admin</span>
+                </div>
+                <button class="logout-btn" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</button>
+            </div>
+        </header>
+
+        <!-- ==================== STATS ==================== -->
+        <div class="cards">
+            <div class="card">
+                <div class="card-icon blue"><i class="fas fa-cube"></i></div>
+                <h4>Total Products</h4>
+                <div class="value"><span id="invTotal">0</span></div>
+            </div>
+            <div class="card">
+                <div class="card-icon orange"><i class="fas fa-triangle-exclamation"></i></div>
+                <h4>Low Stock</h4>
+                <div class="value" style="color:#d97706;"><span id="invLow">0</span></div>
+            </div>
+            <div class="card">
+                <div class="card-icon green"><i class="fas fa-circle-check"></i></div>
+                <h4>In Stock</h4>
+                <div class="value" style="color:#16a34a;"><span id="invInStock">0</span></div>
+            </div>
+            <div class="card">
+                <div class="card-icon purple"><i class="fas fa-coins"></i></div>
+                <h4>Inventory Value (Cost)</h4>
+                <div class="value">₱<span id="invValue">0</span></div>
+            </div>
+        </div>
+
+        <!-- ==================== INVENTORY TABLE ==================== -->
+        <div class="table-container">
+            <div class="toolbar">
+                <h3>Product List</h3>
+                <div class="toolbar-actions">
+                    <input type="text" id="invSearch" class="search-input"
+                           placeholder="Search product..." oninput="searchInventory()" />
+                    <button class="btn btn-primary" onclick="openProductModal()">
+                        <i class="fas fa-plus"></i> Add Product
+                    </button>
+                </div>
+            </div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Product</th>
+                        <th>Category</th>
+                        <th>Stock</th>
+                        <th>Price</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="inventoryTable">
+                    <!-- Loaded by script.js -->
+                </tbody>
+            </table>
+        </div>
+
+        <footer>
+            <p>© 2025 Ganzon's POS System. All rights reserved.</p>
+        </footer>
+    </div>
+
+    <!-- ==================== PRODUCT MODAL ==================== -->
+    <div class="modal-backdrop" id="productModal">
+        <div class="modal">
+            <h3 id="productModalTitle">Add Product</h3>
+            <input type="hidden" id="pId" />
+
+            <div class="form-group">
+                <label>Product Name</label>
+                <input type="text" id="pName" placeholder="e.g. Coca Cola 1.5L" />
+            </div>
+
+            <div class="form-group">
+                <label>Category</label>
+                <select id="pCategory">
+                    <option>Drinks</option>
+                    <option>Snacks</option>
+                    <option>Groceries</option>
+                    <option>Household</option>
+                    <option>Other</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Icon (emoji)</label>
+                <input type="text" id="pIcon" placeholder="🥤" maxlength="4" />
+            </div>
+
+            <div class="grid-2" style="margin-bottom:0;">
+                <div class="form-group">
+                    <label>Price (₱)</label>
+                    <input type="number" id="pPrice" min="0" step="0.01" placeholder="0.00" />
+                </div>
+                <div class="form-group">
+                    <label>Cost (₱)</label>
+                    <input type="number" id="pCost" min="0" step="0.01" placeholder="0.00" />
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Stock Quantity</label>
+                <input type="number" id="pStock" min="0" step="1" placeholder="0" />
+            </div>
+
+            <div class="modal-actions">
+                <button class="btn btn-ghost" onclick="closeModal('productModal')">Cancel</button>
+                <button class="btn btn-primary" onclick="saveProductForm()">
+                    <i class="fas fa-save"></i> Save Product
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/auth.js"></script>
+    <script src="js/script.js"></script>
+</body>
+</html>
